@@ -1,0 +1,144 @@
+project:
+  region_name: "天津中心城区-东丽区组合研究区"
+  districts:
+    - 东丽区
+    - 和平区
+    - 河北区
+    - 河东区
+    - 河西区
+    - 南开区
+    - 红桥区
+  random_state: 42
+
+amap:
+  api_key: "cbb71450eaaa4a2d43095a57f2d54a40"
+  city_limit: true
+  page_size: 25
+  max_pages: 100
+
+poi:
+  core_types:
+    - 物流速递
+    - 医疗保健服务
+  auxiliary_types:
+    - 快餐厅
+    - 中餐厅
+    - 咖啡厅
+    - 甜品店
+    - 旅行社
+    - 宾馆酒店
+  weights:
+    物流速递: 1.00
+    医疗保健服务: 0.90
+    快餐厅: 0.80
+    中餐厅: 0.75
+    咖啡厅: 0.70
+    甜品店: 0.70
+    宾馆酒店: 0.60
+    旅行社: 0.40
+
+clustering:
+  main_radius_km: 4.0
+  target_coverage: 0.90
+  kmax: 60
+  near_center_m: 100
+  sub_radius_km: 2.0
+  sub_target_coverage: 0.90
+  sub_trigger_pending_count: 5
+
+gravity_flow:
+  beta: 1.5
+
+trunk_network:
+  k_edge_default: 6
+  k_edge_max: 12
+  redundant_edge_ratio: 0.20
+  cost_weight_distance: 0.5
+  cost_weight_flow: 0.5
+
+aco:
+  n_ants: 50
+  n_iter: 200
+  alpha: 1.0
+  beta_aco: 2.0
+  rho: 0.3
+  q: 1.0
+  epsilon: 1.0e-6
+
+branch:
+  max_branch_distance_km: 4.0
+
+nofly_zones:
+  enabled: true
+  zones:
+    - name: "天津滨海国际机场禁飞区"
+      type: "osm_way"
+      osm_way_id: 107015361
+      fallback_type: "circle"
+      center_lat: 39.1244
+      center_lon: 117.3460
+      radius_km: 5.0
+
+weather:
+  area:
+    north: 40.4
+    south: 38.4
+    west: 116.4
+    east: 118.4
+  era5_variables:
+    - 10m_u_component_of_wind
+    - 10m_v_component_of_wind
+    - total_precipitation
+  sample_pools:
+    - 常规
+    - 极端风
+    - 极端雨
+    - 风雨复合
+  extreme_percentile: 0.90
+  edge_sample_interval_m: 500
+  edge_min_sample_points: 5
+  uav_air_speed_mps: 22.22
+  light_rain_speed_mps: 3.1
+  wind_fail_threshold_mps: 13.9
+  wind_affected_threshold_mps: 8.0
+  rain_fail_threshold_mm_day: 10.0
+
+meteo_model:
+  mode_options:
+    - offline_prediction
+    - online_inference
+  era5_window_size: 5
+  model_path: "models/meteo_edge_model.pt"
+  prediction_path: "data/processed/meteo_edge_predictions.parquet"
+  model_path_all: "models/meteo_edge_model_all.pt"
+  prediction_path_all: "data/processed/meteo_edge_predictions_all.parquet"
+
+damage_assessment:
+  fail_prob_threshold: 0.25
+  affected_prob_threshold: 0.10
+
+nsga2:
+  pop_size: 80
+  n_gen: 200
+  crossover_prob: 0.9
+  mutation_prob: 0.2
+  selection: "binary_tournament"
+  crossover: "OX"
+  mutation: "swap"
+  objectives:
+    - R_struct
+    - R_flow
+
+simulation:
+  demo_runs: 1
+  batch_runs_per_pool: 100
+  default_batch_pools:
+    - 极端风
+    - 极端雨
+    - 风雨复合
+
+visualization:
+  normal_edge_color: "blue"
+  affected_edge_color: "orange"
+  failed_edge_color: "red"
+  recovery_edge_color: "purple"

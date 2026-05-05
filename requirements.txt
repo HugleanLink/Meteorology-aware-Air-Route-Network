@@ -1,0 +1,17 @@
+streamlit
+streamlit-folium
+plotly
+folium
+scikit-learn
+networkx
+pymoo
+requests
+pyyaml
+pandas
+geopandas
+numpy
+torch
+scipy
+pyproj
+shapely
+tqdm
